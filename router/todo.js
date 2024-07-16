@@ -48,4 +48,37 @@ router.post('/create-new-todo', (req, res)=>{
     res.json({payload: todos})
 })
 
+router.put('/toggle-done-by-id', (req, res)=>{
+    let foundItem = todos.find(item => item.id === req.body.id)
+    if(foundItem){
+        let place = todos.indexOf(foundItem)
+        let isDone
+        if(foundItem.done === "true"){
+            isDone = "false"
+        }else{
+            isDone = "true"
+        }
+        let updatedItem = {
+            id: foundItem.id,
+            todo: foundItem.todo,
+            done: isDone
+        }
+        todos = todos.slice(0,place).concat(updatedItem).concat(todos.slice(place+1,todos.length))
+        res.json({message: "Todo updated", payload: todos})
+    }else{
+        res.json({message: "Item not found, please check ID."})
+    }
+})
+
+router.delete('/delete-todo-by-id', (req, res)=>{
+    let foundItem = todos.find(item => item.id === req.body.id)
+    if(foundItem){
+        let place = todos.indexOf(foundItem)
+        todos.splice(place,1)
+        res.json({message: "Todo deleted", payload: todos})
+    }else{
+        res.json({message: "Item not found, please check ID."})
+    }
+})
+
 module.exports = router
